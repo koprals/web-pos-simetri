@@ -29,7 +29,6 @@ yarn-error.log
 *.log
 
 # Dependency directories
-composer.lock
 package-lock.json
 yarn.lock
 
