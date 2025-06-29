@@ -1,7 +1,7 @@
-# Base image
+# Gunakan image PHP 8.3 FPM
 FROM php:8.3-fpm
 
-# Install system dependencies
+# Install dependensi sistem yang dibutuhkan
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -13,35 +13,36 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     zip unzip curl git nodejs npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip intl
+    && docker-php-ext-install \
+        pdo pdo_mysql mbstring exif pcntl bcmath gd zip intl
 
-# Install Composer
+# Salin composer dari image resmi agar tidak download lagi
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Atur direktori kerja aplikasi
 WORKDIR /var/www
 
-# Copy project files
+# Salin semua file project ke dalam container
 COPY . .
 
-# Install PHP dependencies
+# Install dependency backend Laravel
 RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction
 
-# Install & build front-end
+# Install dependency frontend (Vite) dan build asset production
 RUN npm install && npm run build
 
-# Laravel setup (before run)
+# Laravel commands yang penting sebelum dijalankan
 RUN php artisan config:clear \
-    && php artisan view:clear \
-    && php artisan optimize:clear \
-    && php artisan permission:cache-reset \
-    && php artisan storage:link || true
+ && php artisan view:clear \
+ && php artisan optimize:clear \
+ && php artisan permission:cache-reset \
+ && php artisan storage:link || true
 
-# OPTIONAL: Seed Super Admin
+# Jalankan seeder jika dibutuhkan (opsional, bisa dihilangkan kalau tidak perlu)
 RUN php artisan db:seed --class=Database\\Seeders\\SuperAdminSeeder || true
 
-# Expose port for Render
+# Buka port default Laravel
 EXPOSE 8000
 
-# Run Laravel server
+# Jalankan Laravel via built-in dev server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
