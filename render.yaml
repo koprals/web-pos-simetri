@@ -3,7 +3,7 @@ services:
     name: laravel-app
     env: docker
     plan: free
-    branch: main
+    branch: master
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
     envVars:
