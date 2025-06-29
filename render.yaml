@@ -11,5 +11,7 @@ services:
         value: production
       - key: APP_DEBUG
         value: false
+      - key: APP_URL
+        value: https://web-pos-simetri.onrender.com
       - key: APP_KEY
         generateValue: true
