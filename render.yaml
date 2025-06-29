@@ -3,15 +3,17 @@ services:
     name: laravel-app
     env: docker
     plan: free
-    branch: master
     dockerfilePath: ./Dockerfile
+    buildFilter:
+      paths:
+        - Dockerfile
+        - render.yaml
+        - package.json
+        - composer.json
+        - vite.config.js
+        - resources/**
+        - public/**
+        - routes/**
+        - config/**
+    branch: main
     healthCheckPath: /
-    envVars:
-      - key: APP_ENV
-        value: production
-      - key: APP_DEBUG
-        value: false
-      - key: APP_URL
-        value: http://web-pos-simetri.onrender.com
-      - key: APP_KEY
-        generateValue: true
