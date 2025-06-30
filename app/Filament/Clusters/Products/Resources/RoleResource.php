@@ -2,9 +2,9 @@
 
 namespace App\Filament\Clusters\Products\Resources;
 
+use App\Filament\Clusters\Products\Resources\RoleResource\Pages;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\Forms\ShieldSelectAllToggle;
-use App\Filament\Clusters\Products\Resources\RoleResource\Pages;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Facades\Filament;
@@ -177,7 +177,7 @@ class RoleResource extends Resource implements HasShieldPermissions
 
     public static function getNavigationLabel(): string
     {
-        return __('filament-shield::filament-shield.nav.role.label');
+        return __('Akun');
     }
 
     public static function getNavigationIcon(): string

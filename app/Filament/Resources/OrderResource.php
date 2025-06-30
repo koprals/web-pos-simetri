@@ -3,26 +3,24 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
-use App\Models\Product;
-use App\Models\OrderProduct;
 use App\Models\PaymentMethod;
+use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Repeater;
-use Filament\Notifications\Notification;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-shopping-cart';
+
+    protected static ?string $navigationLabel = 'Penjualan';
 
     protected static ?int $navigationSort = 2;
 
@@ -40,11 +38,11 @@ class OrderResource extends Resource
                                 Forms\Components\Select::make('gender')
                                     ->options([
                                         'male' => 'Laki-laki',
-                                        'female' => 'Perempuan'
+                                        'female' => 'Perempuan',
                                     ])
                                     ->required(),
-                            ])
-                ]),
+                            ]),
+                    ]),
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make('Info Tambahan')
@@ -52,17 +50,17 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->maxLength(255),
-                                
+
                                 Forms\Components\TextInput::make('phone')
                                     ->tel()
                                     ->maxLength(255),
                                 Forms\Components\DatePicker::make('birthday'),
-                            ])
-                ]),
+                            ]),
+                    ]),
                 Forms\Components\Section::make('Produk dipesan')->schema([
                     self::getItemsRepeater(),
                 ]),
-                
+
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Section::make()
@@ -73,7 +71,7 @@ class OrderResource extends Resource
                                     ->numeric(),
                                 Forms\Components\Textarea::make('note')
                                     ->columnSpanFull(),
-                            ])
+                            ]),
                     ]),
                 Forms\Components\Group::make()
                     ->schema([
@@ -86,18 +84,16 @@ class OrderResource extends Resource
                                         $paymentMethod = PaymentMethod::find($state);
                                         $set('is_cash', $paymentMethod?->is_cash ?? false);
 
-                                        if (!$paymentMethod->is_cash) {
+                                        if (! $paymentMethod->is_cash) {
                                             $set('change_amount', 0);
                                             $set('paid_amount', $get('total_price'));
                                         }
-
-                                        
 
                                     })
                                     ->afterStateHydrated(function (Forms\Set $set, Forms\Get $get, $state) {
                                         $paymentMethod = PaymentMethod::find($state);
 
-                                        if (!$paymentMethod?->is_cash) {
+                                        if (! $paymentMethod?->is_cash) {
                                             $set('paid_amount', $get('total_price'));
                                             $set('change_amount', 0);
                                         }
@@ -120,13 +116,9 @@ class OrderResource extends Resource
                                     ->numeric()
                                     ->label('Kembalian')
                                     ->readOnly(),
-                            ])
-                        ]),
-                        
-               
-                
-                
-                
+                            ]),
+                    ]),
+
             ]);
     }
 
@@ -204,7 +196,7 @@ class OrderResource extends Resource
                     ->required()
                     ->options(Product::query()->where('stock', '>', 1)->pluck('name', 'id'))
                     ->columnSpan([
-                        'md' => 5
+                        'md' => 5,
                     ])
                     ->afterStateHydrated(function (Forms\Set $set, Forms\Get $get, $state) {
                         $product = Product::find($state);
@@ -226,7 +218,7 @@ class OrderResource extends Resource
                     ->default(1)
                     ->minValue(1)
                     ->columnSpan([
-                        'md' => 1
+                        'md' => 1,
                     ])
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         $stock = $get('stock');
@@ -245,7 +237,7 @@ class OrderResource extends Resource
                     ->numeric()
                     ->readOnly()
                     ->columnSpan([
-                        'md' => 1
+                        'md' => 1,
                     ]),
                 Forms\Components\TextInput::make('unit_price')
                     ->label('Harga saat ini')
@@ -253,15 +245,15 @@ class OrderResource extends Resource
                     ->numeric()
                     ->readOnly()
                     ->columnSpan([
-                        'md' => 3
+                        'md' => 3,
                     ]),
-                
+
             ]);
     }
 
     protected static function updateTotalPrice(Forms\Get $get, Forms\Set $set): void
     {
-        $selectedProducts = collect($get('orderProducts'))->filter(fn($item) => !empty($item['product_id']) && !empty($item['quantity']));
+        $selectedProducts = collect($get('orderProducts'))->filter(fn ($item) => ! empty($item['product_id']) && ! empty($item['quantity']));
 
         $prices = Product::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
         $total = $selectedProducts->reduce(function ($total, $product) use ($prices) {

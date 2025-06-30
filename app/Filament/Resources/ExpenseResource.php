@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExpenseResource\Pages;
-use App\Filament\Resources\ExpenseResource\RelationManagers;
 use App\Models\Expense;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ExpenseResource extends Resource
 {
@@ -19,10 +16,11 @@ class ExpenseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-currency-dollar';
 
+    protected static ?string $navigationLabel = 'Pengeluaran';
+
     protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationGroup = 'Others';
-
 
     public static function form(Form $form): Form
     {
@@ -51,7 +49,7 @@ class ExpenseResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-               
+
                 Tables\Columns\TextColumn::make('amount')
                     ->numeric()
                     ->sortable(),
