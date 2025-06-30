@@ -40,6 +40,8 @@ RUN php artisan config:clear \
 
 # Jalankan seeder jika dibutuhkan (opsional, bisa dihilangkan kalau tidak perlu)
 RUN php artisan db:seed --class=Database\\Seeders\\SuperAdminSeeder || true
+RUN mkdir -p storage/framework/livewire-tmp && chmod -R 775 storage && chown -R www-data:www-data storage
+RUN echo "upload_max_filesize=10M\npost_max_size=12M" > /usr/local/etc/php/conf.d/uploads.ini
 
 # Buka port default Laravel
 EXPOSE 8000
