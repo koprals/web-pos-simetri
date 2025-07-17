@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Clusters\Products\Resources;
 
 use App\Filament\Clusters\Products;
-use App\Filament\Resources\CategoryResource\Pages;
-use App\Models\Category;
+use App\Filament\Clusters\Products\Resources\EquipmentResource\Pages;
+use App\Models\Equipment;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
@@ -12,17 +12,17 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class CategoryResource extends Resource
+class EquipmentResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = Equipment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
-    protected static ?string $navigationLabel = 'Kategori';
-
-    protected static bool $shouldRegisterNavigation = false;
+    protected static ?string $navigationLabel = 'Alat';
 
     protected static ?string $cluster = Products::class;
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -30,19 +30,29 @@ class CategoryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->afterStateUpdated(function (Set $set, $state) {
-                        $set('slug', Category::generateUniqueSlug($state));
+                        $set('slug', Equipment::generateUniqueSlug($state));
                     })
-                    ->required()
                     ->live(onBlur: true)
+                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->readOnly()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('stock')
+                    ->required()
+                    ->numeric()
+                    ->default(1),
+                Forms\Components\TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Rp.'),
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
+                Forms\Components\FileUpload::make('image')
+                    ->image(),
+                Forms\Components\Textarea::make('description')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -50,10 +60,14 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('stock')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -92,9 +106,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListEquipment::route('/'),
+            'create' => Pages\CreateEquipment::route('/create'),
+            'edit' => Pages\EditEquipment::route('/{record}/edit'),
         ];
     }
 }

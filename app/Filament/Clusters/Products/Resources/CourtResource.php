@@ -1,38 +1,54 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Clusters\Products\Resources;
 
-use App\Filament\Resources\PaymentMethodResource\Pages;
-use App\Models\PaymentMethod;
+use App\Filament\Clusters\Products;
+use App\Filament\Clusters\Products\Resources\CourtResource\Pages;
+use App\Models\Court;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class PaymentMethodResource extends Resource
+class CourtResource extends Resource
 {
-    protected static ?string $model = PaymentMethod::class;
+    protected static ?string $model = Court::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-newspaper';
+    protected static ?string $navigationIcon = 'heroicon-o-map';
 
-    protected static ?string $navigationLabel = 'Metode Pembayaran';
+    protected static ?string $navigationLabel = 'Lapangan';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?string $cluster = Products::class;
 
-    protected static ?string $navigationGroup = 'Lainnya';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->afterStateUpdated(function (Set $set, $state) {
+                        $set('slug', Court::generateUniqueSlug($state));
+                    })
+                    ->live(onBlur: true)
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('slug')
+                    ->required()
+                    ->readOnly()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Rp.'),
+                Forms\Components\Toggle::make('is_active')
+                    ->required(),
                 Forms\Components\FileUpload::make('image')
                     ->image(),
-                Forms\Components\Toggle::make('is_cash')
-                    ->required(),
+                Forms\Components\Textarea::make('description')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -40,10 +56,12 @@ class PaymentMethodResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\IconColumn::make('is_cash')
+                Tables\Columns\TextColumn::make('price')
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -81,9 +99,9 @@ class PaymentMethodResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPaymentMethods::route('/'),
-            'create' => Pages\CreatePaymentMethod::route('/create'),
-            'edit' => Pages\EditPaymentMethod::route('/{record}/edit'),
+            'index' => Pages\ListCourts::route('/'),
+            'create' => Pages\CreateCourt::route('/create'),
+            'edit' => Pages\EditCourt::route('/{record}/edit'),
         ];
     }
 }

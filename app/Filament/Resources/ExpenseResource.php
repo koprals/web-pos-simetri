@@ -20,7 +20,7 @@ class ExpenseResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationGroup = 'Others';
+    protected static ?string $navigationGroup = 'Lainnya';
 
     public static function form(Form $form): Form
     {
