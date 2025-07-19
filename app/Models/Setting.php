@@ -3,11 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Setting extends Model
 {
-    //
-    use HasFactory;
-    protected $fillable = ['shop', 'address', 'phone'];
+    protected $fillable = ['key', 'value'];
+
+    protected $casts = [
+        'value' => 'array',
+    ];
+
+    public static function getValue($key, $default = null)
+    {
+        return static::where('key', $key)->first()->value ?? $default;
+    }
 }

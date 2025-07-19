@@ -3,124 +3,388 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Core Padel</title>
-  @vite('resources/css/app.css')
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>{{ $logo['logo_text'] ?? 'Core Padel' }}</title>
+  <link rel="icon" type="image/png" href="{{ asset('storage/' . ($logo['logo_image'] ?? 'uploads/logo/default.png')) }}">
   <style>
+    /* Base Styles */
     html {
       scroll-behavior: smooth;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: white;
+      color: #1f2937;
     }
-    .hero-bg {
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header Styles */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #047857;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      z-index: 50;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .logo-text {
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    nav {
+      display: none;
+    }
+
+    nav a {
+      color: white;
+      font-weight: 500;
+      text-decoration: none;
+      margin: 0 1.5rem;
+    }
+
+    nav a:hover {
+      color: #facc15;
+    }
+
+    /* Hero Section */
+    #hero {
       background: radial-gradient(circle at top left, #064e3b, #065f46);
+      color: white;
+      padding-top: 8rem;
+      padding-bottom: 5rem;
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .hero-content {
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.25;
+    }
+
+    .hero-description {
+      font-size: 1.125rem;
+      color: #e5e7eb;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-button {
+      background-color: #facc15;
+      color: #064e3b;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .hero-button:hover {
+      background-color: #eab308;
+    }
+
+    .hero-image {
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-image img {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 0.75rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease;
+    }
+
+    .hero-image img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Social Media Section */
+    #social {
+      background-color: #f9fafb;
+      padding: 4rem 0;
+    }
+
+    .social-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      text-align: center;
+    }
+
+    .social-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #064e3b;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-description {
+      color: #4b5563;
+      margin-bottom: 1.5rem;
+      max-width: 36rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      color: #047857;
+      font-size: 1.875rem;
+    }
+
+    .social-icons a {
+      color: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .social-icons a:hover {
+      color: #064e3b;
+    }
+
+    /* Contact Section */
+    #contact {
+      background-color: white;
+      padding: 4rem 0;
+    }
+
+    .contact-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .contact-map {
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 100%
+    }
+
+    .contact-map iframe {
+      width: 100%;
+      height: 573px;
+      border: none;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .contact-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #047857;
+    }
+
+    .contact-text {
+      color: #4b5563;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      color: #1f2937;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .contact-icon {
+      width: 1.75rem;
+      height: 1.75rem;
+      color: #059669;
+      flex-shrink: 0;
+    }
+
+    .contact-item-title {
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #065f46;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    /* Responsive Styles */
+    @media (min-width: 768px) {
+      nav {
+        display: flex;
+      }
+
+      .hero-container {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .hero-content {
+        text-align: left;
+        flex: 1;
+      }
+
+      .hero-image {
+        flex: 1;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
-    <body class="font-sans bg-white text-gray-800">
+<body>
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 w-full bg-green-700 shadow-md z-50">
-        <div class="container mx-auto flex justify-between items-center px-6 py-4">
-        <div class="flex items-center gap-2">
-            <img src="https://placehold.co/40x40" class="rounded-full" alt="Logo">
-            <span class="text-white text-xl font-bold">CORE PADEL</span>
-        </div>
-        <nav class="hidden md:flex space-x-6 text-white font-medium">
-            <a href="#hero" class="hover:text-yellow-300">Home</a>
-            <a href="#social" class="hover:text-yellow-300">Social</a>
-            <a href="#contact" class="hover:text-yellow-300">Contact</a>
-        </nav>
-        </div>
-    </header>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="{{ asset('storage/' . ($logo['logo_image'] ?? 'uploads/logo/default.png')) }}" class="logo-img" alt="Logo">
+        <span class="logo-text">{{ $logo['logo_text'] ?? 'Core Padel' }}</span>
+      </div>
+      <nav>
+        <a href="#hero">Home</a>
+        <a href="#social">Social</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero-bg text-white pt-32 pb-20">
-        <div class="container mx-auto flex flex-col md:flex-row items-center px-6 gap-10">
-        <div class="md:w-1/2 text-center md:text-left">
-            <h1 class="text-5xl font-bold mb-4 leading-tight">Unleash Your Inner Athlete</h1>
-            <p class="mb-6 text-lg text-gray-200">Experience the energy of padel sports with Core Padel – where passion meets performance!</p>
-            <a href="#contact" class="bg-yellow-400 hover:bg-yellow-500 text-green-900 font-semibold px-6 py-3 rounded-full transition duration-300 inline-block">Join Us Today</a>
-        </div>
-        <div class="md:w-1/2 flex justify-center">
-            <img src="https://placehold.co/600x400" class="rounded-xl shadow-2xl transform hover:scale-105 transition" alt="Padel Player">
-        </div>
-        </div>
-    </section>
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">{{ $hero['title'] ?? 'Unleash Your Inner Athlete' }}</h1>
+        <p class="hero-description">{{ $hero['subtitle'] ?? 'Experience the energy of padel sports with Core Padel – where passion meets performance!' }}</p>
+        <a href="#contact" class="hero-button">{{ $hero['button_text'] ?? 'Join Us Today' }}</a>
+      </div>
+      <div class="hero-image">
+        <img src="{{ asset('storage/' . ($hero['background_image'] ?? 'uploads/hero/default-hero.jpg')) }}" alt="Hero Image">
+      </div>
+    </div>
+  </section>
 
-    <!-- Social Media Section -->
-    <section id="social" class="bg-gray-50 py-16">
-        <div class="container mx-auto text-center px-4">
-        <h2 class="text-3xl font-bold text-green-800 mb-6">Follow Our Journey</h2>
-        <p class="mb-6 text-gray-600 max-w-xl mx-auto">Stay connected with Core Padel. Join our community on social media and get daily updates, tips, and more.</p>
-        <div class="flex justify-center gap-8 text-green-700 text-3xl">
-            <a href="#" class="hover:text-green-900 transition">
-            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.66 9.13 8.44 9.88v-6.99h-2.54V12h2.54V9.79c0-2.51 1.5-3.89 3.79-3.89 1.1 0 2.25.2 2.25.2v2.47h-1.27c-1.25 0-1.64.77-1.64 1.56V12h2.8l-.45 2.89h-2.35v6.99C18.34 21.13 22 17 22 12z"/></svg>
+  <!-- Social Media Section -->
+  <section id="social">
+    <div class="social-container">
+      <h2 class="social-title">{{ $social['title'] ?? 'Follow Our Journey' }}</h2>
+      <p class="social-description">{{ $social['description'] ?? 'Stay connected with Core Padel. Join our community on social media and get daily updates, tips, and more.' }}</p>
+      <div class="social-icons">
+        @foreach (['facebook', 'instagram', 'tiktok'] as $platform)
+          @if(!empty($social[$platform]))
+            <a href="{{ $social[$platform] }}" target="_blank">
+              <i class="fab fa-{{ $platform }}"></i>
             </a>
-            <a href="#" class="hover:text-green-900 transition">
-            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.584.012 4.85.07 1.366.062 2.633.34 3.608 1.315s1.253 2.242 1.315 3.608c.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.34 2.633-1.315 3.608s-2.242 1.253-3.608 1.315c-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.34-3.608-1.315s-1.253-2.242-1.315-3.608C2.212 15.584 2.2 15.204 2.2 12s.012-3.584.07-4.85c.062-1.366.34-2.633 1.315-3.608S5.827 2.332 7.193 2.27c1.266-.058 1.646-.07 4.85-.07z"/></svg>
-            </a>
+          @endif
+        @endforeach
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="contact-container">
+      <div class="contact-grid">
+        <div class="contact-map">
+          <iframe
+            src="{{ $contact['map_embed'] ?? 'https://maps.google.com' }}"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
         </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="bg-white py-16">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-
-                <!-- Left: Google Maps (400x400 fixed size) -->
-                <div class="rounded-lg overflow-hidden shadow-lg flex justify-center">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15866.665707905076!2d106.82200295906999!3d-6.1753924!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764b12d%3A0x3d2ad6e1e0e9bcc8!2sNational%20Monument!5e0!3m2!1sen!2sid!4v1751958562545!5m2!1sen!2sid"
-                        width="800" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-[800px] h-[400px]">
-                    </iframe>
+        <div class="contact-info">
+          <h2 class="contact-title">{{ $contact['title'] ?? 'Get in touch' }}</h2>
+          <p class="contact-text">{{ $contact['description'] ?? 'We\'re always on the lookout to work with new clients. If you\'re interested in working with us, please get in touch in one of the following ways.' }}</p>
+          <div class="contact-details">
+            <div class="contact-item">
+                <div>
+                    <h4 class="contact-item-title">Address</h4>
+                    <p>{{ $contact['address'] ?? 'Jl. Padel No.123, Jakarta, Indonesia' }}</p>
                 </div>
-
-                <!-- Right: Contact Info -->
-                <div class="space-y-6">
-                    <h2 class="text-4xl font-bold text-green-700">Get in touch</h2>
-                    <p class="text-gray-600">
-                        We’re always on the lookout to work with new clients. If you’re interested in working with us, please get in touch in one of the following ways.
-                    </p>
-                    <div class="space-y-5 text-gray-800">
-                        <div class="flex items-start gap-4">
-                            <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                            </svg>
-                            <div>
-                                <h4 class="font-semibold text-lg">Address</h4>
-                                <p>Jl. Padel No.123, Jakarta, Indonesia</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h2.586a1 1 0 01.707.293l1.414 1.414A1 1 0 0010.414 5H20a2 2 0 012 2v10a2 2 0 01-2 2h-7.586a1 1 0 00-.707.293l-1.414 1.414a1 1 0 01-.707.293H5a2 2 0 01-2-2V5z" />
-                            </svg>
-                            <div>
-                                <h4 class="font-semibold text-lg">Phone</h4>
-                                <p>+62 812-3456-7890</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 12H8m8 0l-4 4m4-4l-4-4" />
-                            </svg>
-                            <div>
-                                <h4 class="font-semibold text-lg">E-Mail</h4>
-                                <p>contact@corepadel.com</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+            <div class="contact-item">
+                <div>
+                    <h4 class="contact-item-title">Phone</h4>
+                    <p>{{ $contact['phone'] ?? '+62 812-3456-7890' }}</p>
+                </div>
+            </div>
+            <div class="contact-item">
+                <div>
+                    <h4 class="contact-item-title">E-Mail</h4>
+                    <p>{{ $contact['email'] ?? 'contact@corepadel.com' }}</p>
+                </div>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
+  <!-- Footer -->
+  <footer>
+    &copy; {{ date('Y') }} 'Simetri'. All rights reserved.
+  </footer>
 
-    <!-- Footer -->
-    <footer class="bg-green-800 text-white text-center py-4">
-        &copy; 2025 Core Padel. All rights reserved.
-    </footer>
-
-    </body>
+</body>
 </html>
