@@ -21,6 +21,8 @@ class RentalCourtResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-calendar-days';
 
+    protected static ?string $navigationGroup = 'Penjualan & Sewa';
+
     protected static ?string $navigationLabel = 'Rental Lapangan';
 
     protected static ?int $navigationSort = 3;

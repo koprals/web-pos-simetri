@@ -22,6 +22,8 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-clipboard-document-list';
 
+    protected static ?string $navigationGroup = 'Penjualan & Sewa';
+
     protected static ?string $navigationLabel = 'Penjualan';
 
     protected static ?int $navigationSort = 2;

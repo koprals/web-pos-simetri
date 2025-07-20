@@ -16,7 +16,7 @@ class SettingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
 
-    protected static ?string $navigationGroup = 'Website';
+    protected static ?string $navigationGroup = 'Lainnya';
 
     public static function canCreate(): bool
     {

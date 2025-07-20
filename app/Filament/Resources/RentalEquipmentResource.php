@@ -23,6 +23,8 @@ class RentalEquipmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-wrench-screwdriver';
 
+    protected static ?string $navigationGroup = 'Penjualan & Sewa';
+
     protected static ?string $navigationLabel = 'Rental Peralatan';
 
     protected static ?int $navigationSort = 4;
