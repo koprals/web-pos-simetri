@@ -135,6 +135,17 @@ class RentCourt extends Component implements HasForms
             return [];
         }
 
+        // Get Operational Hours
+        $value = \App\Models\Setting::where('key', 'operational_hours')->value('value');
+        $operationalHours = is_string($value) ? json_decode($value, true) : $value;
+
+        $openTime = $operationalHours['open_time'] ?? '08:00';
+        $closeTime = $operationalHours['close_time'] ?? '22:00';
+
+        // Parse open & close ke integer jam
+        $startHour = intval(explode(':', $openTime)[0]);
+        $endHour = intval(explode(':', $closeTime)[0]);
+
         $bookedTimes = RentalCourt::where('court_id', $this->selectedCourt)
             ->whereDate('start_time', $this->tanggal)
             ->get()
@@ -146,14 +157,16 @@ class RentCourt extends Component implements HasForms
             });
 
         $availableHours = [];
-        for ($hour = 8; $hour <= 22; $hour++) {
+        for ($hour = $startHour; $hour < $endHour; $hour++) {
             $time = sprintf('%02d:00', $hour);
             $timeEnd = sprintf('%02d:00', $hour + 1);
             $isAvailable = true;
 
             foreach ($bookedTimes as $booked) {
-                if (($time >= $booked['start'] && $time < $booked['end']) ||
-                    ($timeEnd > $booked['start'] && $timeEnd <= $booked['end'])) {
+                if (
+                    ($time >= $booked['start'] && $time < $booked['end']) ||
+                    ($timeEnd > $booked['start'] && $timeEnd <= $booked['end'])
+                ) {
                     $isAvailable = false;
                     break;
                 }

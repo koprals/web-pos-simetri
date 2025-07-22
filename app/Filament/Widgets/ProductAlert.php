@@ -2,15 +2,17 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Product;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use App\Models\Product;
 
 class ProductAlert extends BaseWidget
 {
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 6;
+
     protected static ?string $heading = 'Produk hampir habis';
+
     public function table(Table $table): Table
     {
         return $table
@@ -31,7 +33,7 @@ class ProductAlert extends BaseWidget
                             return 'warning';
                         }
                     })
-                    ->sortable()
+                    ->sortable(),
             ])
             ->defaultPaginationPageOption(5);
     }

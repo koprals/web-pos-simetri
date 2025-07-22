@@ -2,22 +2,24 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Product;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use App\Models\Product;
-use App\Models\OrderProduct;
 
 class ProductFavorite extends BaseWidget
 {
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 7;
+
     protected static ?string $heading = 'Produk Favorit';
+
     public function table(Table $table): Table
     {
         $productQuery = Product::query()
             ->withCount('orderProducts')
             ->orderByDesc('order_products_count')
             ->take(10);
+
         return $table
             ->query($productQuery)
             ->columns([

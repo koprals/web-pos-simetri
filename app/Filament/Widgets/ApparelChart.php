@@ -2,21 +2,23 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Expense;
+use App\Models\OrderProduct;
 use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class ExpenseChart extends ChartWidget
+class ApparelChart extends ChartWidget
 {
-    protected static ?string $heading = 'Pengeluaran';
+    protected static ?string $heading = 'Apparel';
 
-    protected static ?int $sort = 2;
-
-    protected static string $color = 'danger';
+    protected static ?int $sort = 4;
 
     public ?string $filter = 'today';
+
+    protected static string $color = 'success';
+
+    protected static bool $canView = true;
 
     protected function getData(): array
     {
@@ -42,42 +44,49 @@ class ExpenseChart extends ChartWidget
                 'start' => now()->startOfYear(),
                 'end' => now()->endOfYear(),
                 'period' => 'perMonth',
-            ]
+            ],
         };
 
-        $query = Trend::model(Expense::class)
+        $timeColumn = 'order_products.created_on';
+
+        // Query dasar dengan join dan filter kategori
+        $baseQuery = OrderProduct::query()
+            ->join('products', 'order_products.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->where('categories.slug', 'fnb');
+
+        // Gunakan Trend untuk agregasi data
+        $trend = Trend::query($baseQuery)
+            ->dateColumn($timeColumn)
             ->between(
                 start: $dateRange['start'],
                 end: $dateRange['end'],
             );
 
-        if ($dateRange['period'] === 'perHour') {
-            $data = $query->perHour();
-        } elseif ($dateRange['period'] === 'perDay') {
-            $data = $query->perDay();
-        } else {
-            $data = $query->perMonth();
-        }
+        $trendData = match ($dateRange['period']) {
+            'perHour' => $trend->perHour(),
+            'perDay' => $trend->perDay(),
+            'perMonth' => $trend->perMonth(),
+        };
 
-        $data = $data->sum('amount');
+        // Hitung total sales langsung tanpa alias
+        $trendData = $trendData->sum('order_products.quantity * order_products.unit_price');
 
-        $labels = $data->map(function (TrendValue $value) use ($dateRange) {
+        $labels = $trendData->map(function (TrendValue $value) use ($dateRange) {
             $date = Carbon::parse($value->date);
 
-            if ($dateRange['period'] === 'perHour') {
-                return $date->format('H:i');
-            } elseif ($dateRange['period'] === 'perDay') {
-                return $date->format('d M');
-            }
-
-            return $date->format('M Y');
+            return match ($dateRange['period']) {
+                'perHour' => $date->format('H:i'),
+                'perDay' => $date->format('d M'),
+                'perMonth' => $date->format('M Y'),
+            };
         });
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Pengeluaran '.$this->getFilters()[$activeFilter],
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'label' => 'Penjualan '.$this->getFilters()[$activeFilter],
+                    'data' => $trendData->map(fn (TrendValue $value) => $value->aggregate),
                 ],
             ],
             'labels' => $labels,
@@ -96,6 +105,6 @@ class ExpenseChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'line'; // Ganti ke 'bar' jika mau grafik batang
     }
 }

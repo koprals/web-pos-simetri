@@ -83,15 +83,12 @@ class Pos extends Component implements HasForms
                             }),
 
                         // Menampilkan gambar QR jika payment method memiliki gambar
-                        Forms\Components\Fieldset::make('QR Code Payment')
+                        Forms\Components\Fieldset::make('Payment Image')
                             ->schema([
-                                Forms\Components\Image::make('qr_image')
-                                    ->label('')
-                                    ->visible(fn (callable $get) => $get('selected_payment_method')?->image !== null)
-                                    ->hiddenLabel()
-                                    ->height(300)
-                                    ->helperText('Scan QR code untuk melakukan pembayaran')
-                                    ->getStateUsing(fn (callable $get) => $get('selected_payment_method')?->image),
+                                Forms\Components\View::make('livewire.partials.qr-image')
+                                    ->viewData(fn (callable $get) => [
+                                        'selectedPaymentMethod' => $get('selected_payment_method'),
+                                    ]),
                             ])
                             ->visible(fn (callable $get) => $get('selected_payment_method')?->image !== null)
                             ->columns(1),

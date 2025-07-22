@@ -85,6 +85,27 @@ class SettingResource extends Resource
                     Forms\Components\Textarea::make('value.address')
                         ->label('Address')
                         ->visible(fn ($record) => $record && $record->key === 'contact_info'),
+
+                    // LOGO SECTION
+                    Forms\Components\TextInput::make('value.logo_text')
+                        ->label('Logo Text')
+                        ->visible(fn ($record) => $record && $record->key === 'site_logo'),
+
+                    Forms\Components\FileUpload::make('value.logo_image')
+                        ->label('Logo Image')
+                        ->image()
+                        ->directory('logo-images')
+                        ->visible(fn ($record) => $record && $record->key === 'site_logo'),
+
+                    // OPERATIONAL SECTION
+                    Forms\Components\TextInput::make('value.open_time')
+                        ->label('Jam Buka')
+                        ->visible(fn ($record) => $record && $record->key === 'operational_hours'),
+
+                    Forms\Components\TextInput::make('value.close_time')
+                        ->label('Jam Tutup')
+                        ->visible(fn ($record) => $record && $record->key === 'operational_hours'),
+
                 ]),
             ]);
     }

@@ -2,32 +2,25 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Order;
+use App\Models\RentalCourt;
 use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class OmsetChart extends ChartWidget
+class RentalCourtChart extends ChartWidget
 {
-    protected static ?string $heading = 'Pemasukan';
+    protected static ?string $heading = 'Sewa Lapangan';
 
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 5;
 
     public ?string $filter = 'today';
 
     protected static string $color = 'success';
 
-    protected function getOptions(): array
-    {
-        return [
-            'plugins' => [
-                'legend' => [
-                    'display' => true,
-                ],
-            ],
-        ];
-    }
+    protected static bool $canView = true;
+
+    protected int|string|array $columnSpan = '2';
 
     protected function getData(): array
     {
@@ -35,7 +28,7 @@ class OmsetChart extends ChartWidget
 
         $dateRange = $this->getDateRange($activeFilter);
 
-        $query = Trend::model(Order::class)
+        $query = Trend::model(RentalCourt::class)
             ->between($dateRange['start'], $dateRange['end']);
 
         $trendQuery = match ($dateRange['period']) {
@@ -53,7 +46,7 @@ class OmsetChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Pemasukan '.$this->getFilters()[$activeFilter],
+                    'label' => 'Sewa Lapangan '.$this->getFilters()[$activeFilter],
                     'data' => $datasets,
                 ],
             ],
@@ -61,11 +54,9 @@ class OmsetChart extends ChartWidget
         ];
     }
 
-    protected function getContainerAttributes(): array
+    protected function getType(): string
     {
-        return [
-            'class' => 'rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900',
-        ];
+        return 'bar';
     }
 
     protected function getFilters(): ?array
@@ -76,11 +67,6 @@ class OmsetChart extends ChartWidget
             'month' => 'Last month',
             'year' => 'This year',
         ];
-    }
-
-    protected function getType(): string
-    {
-        return 'line';
     }
 
     protected function getDateRange(string $filter): array

@@ -7,6 +7,7 @@ use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Filament\Facades\Filament;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,5 +35,13 @@ class AppServiceProvider extends ServiceProvider
                 SecurityScheme::http('bearer')
             );
         });
+
+        Filament::registerNavigationGroups([
+            'Penjualan & Sewa',
+            'Pemesanan',
+            'Akses Management',
+            'Lainnya'
+        ]);
+
     }
 }
