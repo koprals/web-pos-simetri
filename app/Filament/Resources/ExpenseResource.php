@@ -29,14 +29,15 @@ class ExpenseResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('note')
-                    ->required()
-                    ->columnSpanFull(),
                 Forms\Components\DatePicker::make('date_expense')
                     ->required(),
                 Forms\Components\TextInput::make('amount')
                     ->required()
                     ->numeric(),
+                Forms\Components\Textarea::make('note'),
+                Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -44,6 +45,7 @@ class ExpenseResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('date_expense')
                     ->date()
                     ->sortable(),

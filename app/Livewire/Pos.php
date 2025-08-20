@@ -69,7 +69,6 @@ class Pos extends Component implements HasForms
                             ->default(fn () => $this->total_price),
                         Forms\Components\TextInput::make('note')
                             ->label('Note')
-                            ->required()
                             ->maxLength(255),
                         Forms\Components\Select::make('payment_method_id')
                             ->required()
